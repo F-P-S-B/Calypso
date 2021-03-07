@@ -18,4 +18,4 @@
 ##### In the most of the case, the result look dark, so Calypso generate a result with a better contrast :  
 ![](https://i.imgur.com/AjDVLGm.png)
 
-####### you can notice that this image isn't perfectly aligned.
+###### you can notice that this image isn't perfectly aligned.
