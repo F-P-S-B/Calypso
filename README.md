@@ -4,16 +4,16 @@
 ##### For example here we have M27 , first .fit is captured with oxygen filter, and the second with and hydrogen filtre
 
 #### M27 in fit, with oxygen filter :
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/hDquV5w"  ><a href="//imgur.com/a/hDquV5w">M27</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+![](https://i.imgur.com/Tq3JpBv.jpg)
 
 #### M27 in fit, with hydrogen filter :
-![alt text](https://imgur.com/4flVEE5)
+![](https://i.imgur.com/4flVEE5.png)
 
 #### For the comparaison, a pixel full of oxygen, without hydrogen is 100 % red, and a pixel full of hydrogen, without oxygen is 100 % blue.
 
 #### Result, we can see ther is a lot of oxygen around M27, but inside M27, the hydrogen is bigger :
-![alt text](https://imgur.com/lMfa5ym)
+![](https://i.imgur.com/lMfa5ym.png)
 ##### So don't forget to crop your file
 
 ##### In the most of the case, the result look dark, so Calypso generate a result with a better contrast :  
-![alt text](https://imgur.com/AjDVLGm)
+![](https://i.imgur.com/AjDVLGm.png)
