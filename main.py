@@ -129,6 +129,9 @@ mainbutton.grid(column=0, row=2, columnspan= 2)
 statlabel= tk.LabelFrame(root, text="Statistics",bg="#2f93ba", font=("Helvetica", 12),relief="solid")
 statlabel.pack(fill="y")
 
+pixel1label = tk.Label(statlabel, text="Number of pixel with a majority of element 1")
+pixel1label.pack()
 
-
+pixel2label = tk.Label(statlabel, text="Number of pixel with a majority of element 2")
+pixel2label.pack()
 root.mainloop()
