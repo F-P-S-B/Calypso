@@ -2,9 +2,10 @@ from astropy.io import fits
 from PIL import Image, ImageEnhance
 import time
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import Canvas, filedialog
 import pyfiglet
 import threading
+import os
 
 print(pyfiglet.figlet_format("Calypso", font = "cosmike"))
 print("A Calamar Industries application")
@@ -14,8 +15,10 @@ image_second_element = str()
 
 def mainfunction(image_first, image_second):
 
+    statlabel.configure(text="State : Analyzing")
     startTime=time.time()
 
+    statlabel.configure(text="State : Decomposing .fits or .fit")
     def getDataFromFile(file):
         with fits.open(file) as file:
             file.verify('fix')
@@ -35,6 +38,7 @@ def mainfunction(image_first, image_second):
 
     count2=0
     count1=0
+    statlabel.configure(text="State : Comparing pixels values between both files")
     for i in range(len(liste1)):
         arr=[]
         ssliste1=liste1[i]
@@ -50,9 +54,10 @@ def mainfunction(image_first, image_second):
     pixel1label.configure(text="Number of pixel with a majority of element 1 : {}".format(count1))
     pixel2label.configure(text="Number of pixel with a majority of element 2 : {}".format(count2))
     tempslabel.configure(text="Processing time : {} seconds".format(round(time.time()-startTime,2)))
-    element1ratio.configure(text="Ratio of element 1 {}%".format(round(100*count1/(count2+count1),4)))
-    element2ratio.configure(text="Ratio of element 2 {}%".format(round(100*count2/(count2+count1),4)))
+    element1ratio.configure(text="Ratio of element 1 : {}%".format(round(100*count1/(count2+count1),5)))
+    element2ratio.configure(text="Ratio of element 2 : {}%".format(round(100*count2/(count2+count1),5)))
 
+    statlabel.configure(text="State : Saving .txt")
     with open('comparaison.txt','w') as txt:
         txt.write("{}".format(listeComparaison))
 
@@ -64,7 +69,7 @@ def mainfunction(image_first, image_second):
 
     liste1Unique=[]
     liste2Unique=[]
-
+    statlabel.configure(text="State : Creating list")
     for i in range(2048):
         for j in range(2048):
             liste1Unique.append(liste1[i][j])
@@ -73,7 +78,7 @@ def mainfunction(image_first, image_second):
     minListe2=min(liste2Unique)
 
     valeursRgb=[]
-    print("started creation of result.png")
+    statlabel.configure(text="State : Creating images ...")
     for i in range(2048*2048):
         tup=(  int(255*minListe2/liste2Unique[i]), 0, int(255*minListe1/liste1Unique[i])  )
 
@@ -83,10 +88,14 @@ def mainfunction(image_first, image_second):
     im.putdata(valeursRgb)
     enhancer = ImageEnhance.Contrast(im)
     imCont=enhancer.enhance(15)
+    statlabel.configure(text="State : Saving")
     im.save('res.png')
     imCont.save('resCont.png')
-    print("ended creation")
+    
+    os.system("start res.png")
+    os.system("start resCont.png")
 
+    statlabel.configure(text="State : Ended")
     
 
 # GUI
@@ -109,7 +118,7 @@ def browseFiles(idk):
 
 
 selectlabel= tk.LabelFrame(root, text="File Selection",bg="#2f93ba", font=("Helvetica", 12),relief="solid")
-selectlabel.pack(ipadx=5,ipady=5)
+selectlabel.pack(ipadx=10,ipady=5)
 
 element1button = tk.Button(selectlabel, text = "Select first file",font=("Helvetica", 12),command = lambda: browseFiles("file1"),bg="#2f93ba", width=15) 
 element1button.grid(column = 0, row = 0)
@@ -143,4 +152,8 @@ element2ratio.pack()
 
 tempslabel = tk.Label(statlabel, text="Executing time :",bg="#2f93ba", font=("Helvetica", 12))
 tempslabel.pack()
+
+statlabel = tk.Label(statlabel, text="State :",bg="#2f93ba", font=("Helvetica", 12))
+statlabel.pack()
+
 root.mainloop()
