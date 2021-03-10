@@ -47,6 +47,12 @@ def mainfunction(image_first, image_second):
                 count1+=1
         listeComparaison.append(arr)
 
+    pixel1label.configure(text="Number of pixel with a majority of element 1 : {}".format(count1))
+    pixel2label.configure(text="Number of pixel with a majority of element 2 : {}".format(count2))
+    tempslabel.configure(text="Processing time : {} seconds".format(round(time.time()-startTime,2)))
+    element1ratio.configure(text="Ratio of element 1 {}%".format(round(100*count1/(count2+count1),4)))
+    element2ratio.configure(text="Ratio of element 2 {}%".format(round(100*count2/(count2+count1),4)))
+
     with open('comparaison.txt','w') as txt:
         txt.write("{}".format(listeComparaison))
 
@@ -54,11 +60,7 @@ def mainfunction(image_first, image_second):
         txt.write("{}".format(liste1))
         
     with open("fichier2.txt",'w') as txt:
-        txt.write("{}".format(liste2))  
-        
-    print("Nombre de pixels avec l'oxygène majoritaire : {}".format(count2))
-    print("Nombre de pixels avec l'hydrogène majoritaire : {}".format(count1))
-    print("Ratio 1/total : {}%".format(100*count1/(count2+count1)))
+        txt.write("{}".format(liste2))        
 
     liste1Unique=[]
     liste2Unique=[]
@@ -70,16 +72,12 @@ def mainfunction(image_first, image_second):
     minListe1=min(liste1Unique)
     minListe2=min(liste2Unique)
 
-
-
     valeursRgb=[]
-    print("Début création pixels")
+    print("started creation of result.png")
     for i in range(2048*2048):
         tup=(  int(255*minListe2/liste2Unique[i]), 0, int(255*minListe1/liste1Unique[i])  )
 
         valeursRgb.append(tup)
-        
-    print("Fin création pixels")
 
     im= Image.new('RGB', (2048,2048))
     im.putdata(valeursRgb)
@@ -87,7 +85,9 @@ def mainfunction(image_first, image_second):
     imCont=enhancer.enhance(15)
     im.save('res.png')
     imCont.save('resCont.png')
-    print("Temps d'exécution : ",time.time()-startTime)
+    print("ended creation")
+
+    
 
 # GUI
 
@@ -101,37 +101,46 @@ def browseFiles(idk):
     if idk =="file1":
         global image_first_element
         image_first_element = filedialog.askopenfilename(initialdir = "/",title = "Select the first file",filetypes = (("FIT file",".fit"),("FITS file",".fits")))
-        element1label.configure(text="File selected: "+image_first_element)
+        element1label.configure(text="File selected: "+image_first_element,bg="#2f93ba", font=("Helvetica", 12))
     else :
         global image_second_element
         image_second_element = filedialog.askopenfilename(initialdir = "/",title = "Select the first file",filetypes = (("FIT file",".fit"),("FITS file",".fits")))
-        element2label.configure(text="File selected: "+image_second_element)
+        element2label.configure(text="File selected: "+image_second_element,bg="#2f93ba", font=("Helvetica", 12))
 
 
 selectlabel= tk.LabelFrame(root, text="File Selection",bg="#2f93ba", font=("Helvetica", 12),relief="solid")
-selectlabel.pack(fill="y")
+selectlabel.pack(ipadx=5,ipady=5)
 
-element1button = tk.Button(selectlabel, text = "Select first file",font=("Helvetica", 12),command = lambda: browseFiles("file1")) 
+element1button = tk.Button(selectlabel, text = "Select first file",font=("Helvetica", 12),command = lambda: browseFiles("file1"),bg="#2f93ba", width=15) 
 element1button.grid(column = 0, row = 0)
 
-element1label = tk.Label(selectlabel, text = "No file selected",font=("Helvetica", 12))
+element1label = tk.Label(selectlabel, text = "No file selected",font=("Helvetica", 12),bg="#2f93ba")
 element1label.grid(column = 1, row = 0)
 
-element2button = tk.Button(selectlabel, text = "Select second file",font=("Helvetica", 12),command = lambda: browseFiles("file2")) 
+element2button = tk.Button(selectlabel, text = "Select second file",font=("Helvetica", 12),command = lambda: browseFiles("file2"),bg="#2f93ba",width=15) 
 element2button.grid(column = 0, row = 1)
 
-element2label = tk.Label(selectlabel, text = "No file selected",font=("Helvetica", 12))
+element2label = tk.Label(selectlabel, text = "No file selected",font=("Helvetica", 12),bg="#2f93ba")
 element2label.grid(column = 1, row = 1)  
 
-mainbutton = tk.Button(selectlabel, text = "Calculate",font=("Helvetica", 12), command = lambda: threading.Thread(target=mainfunction,args=(image_first_element,image_second_element)).start()) 
+mainbutton = tk.Button(selectlabel, text = "Calculate",bg="#2f93ba",font=("Helvetica", 12), command = lambda: threading.Thread(target=mainfunction,args=(image_first_element,image_second_element)).start()) 
 mainbutton.grid(column=0, row=2, columnspan= 2)
 
 statlabel= tk.LabelFrame(root, text="Statistics",bg="#2f93ba", font=("Helvetica", 12),relief="solid")
-statlabel.pack(fill="y")
+statlabel.pack(ipadx=5,ipady=5)
 
-pixel1label = tk.Label(statlabel, text="Number of pixel with a majority of element 1")
+pixel1label = tk.Label(statlabel, text="Number of pixel with a majority of element 1 :",bg="#2f93ba", font=("Helvetica", 12))
 pixel1label.pack()
 
-pixel2label = tk.Label(statlabel, text="Number of pixel with a majority of element 2")
+pixel2label = tk.Label(statlabel, text="Number of pixel with a majority of element 2 :",bg="#2f93ba", font=("Helvetica", 12))
 pixel2label.pack()
+
+element1ratio = tk.Label(statlabel, text="Ratio of element 1 :",bg="#2f93ba", font=("Helvetica", 12))
+element1ratio.pack()
+
+element2ratio = tk.Label(statlabel, text="Ratio of element 2 :",bg="#2f93ba", font=("Helvetica", 12))
+element2ratio.pack()
+
+tempslabel = tk.Label(statlabel, text="Executing time :",bg="#2f93ba", font=("Helvetica", 12))
+tempslabel.pack()
 root.mainloop()
