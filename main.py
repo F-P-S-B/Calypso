@@ -2,7 +2,8 @@ from astropy.io import fits
 from PIL import Image, ImageEnhance
 import time
 import tkinter as tk
-from tkinter import Canvas, filedialog
+from tkinter import filedialog
+from tkinter.ttk import Progressbar
 import pyfiglet
 import threading
 import os
@@ -14,10 +15,14 @@ image_first_element = str()
 image_second_element = str()
 
 def mainfunction(image_first, image_second):
-
+    
+    progress['value'] = 10
+    root.update_idletasks()
     statlabel.configure(text="State : Analyzing")
     startTime=time.time()
 
+    progress['value'] = 20
+    root.update_idletasks()
     statlabel.configure(text="State : Decomposing .fits or .fit")
     def getDataFromFile(file):
         with fits.open(file) as file:
@@ -38,6 +43,8 @@ def mainfunction(image_first, image_second):
 
     count2=0
     count1=0
+    progress['value'] = 30
+    root.update_idletasks()
     statlabel.configure(text="State : Comparing pixels values between both files")
     for i in range(len(liste1)):
         arr=[]
@@ -57,6 +64,8 @@ def mainfunction(image_first, image_second):
     element1ratio.configure(text="Ratio of element 1 : {}%".format(round(100*count1/(count2+count1),5)))
     element2ratio.configure(text="Ratio of element 2 : {}%".format(round(100*count2/(count2+count1),5)))
 
+    progress['value'] = 40
+    root.update_idletasks()
     statlabel.configure(text="State : Saving .txt")
     with open('comparaison.txt','w') as txt:
         txt.write("{}".format(listeComparaison))
@@ -69,7 +78,10 @@ def mainfunction(image_first, image_second):
 
     liste1Unique=[]
     liste2Unique=[]
+    progress['value'] = 50
     statlabel.configure(text="State : Creating list")
+    root.update_idletasks()
+    
     for i in range(2048):
         for j in range(2048):
             liste1Unique.append(liste1[i][j])
@@ -78,6 +90,8 @@ def mainfunction(image_first, image_second):
     minListe2=min(liste2Unique)
 
     valeursRgb=[]
+    progress['value'] = 60
+    root.update_idletasks()
     statlabel.configure(text="State : Creating images ...")
     for i in range(2048*2048):
         tup=(  int(255*minListe2/liste2Unique[i]), 0, int(255*minListe1/liste1Unique[i])  )
@@ -88,6 +102,9 @@ def mainfunction(image_first, image_second):
     im.putdata(valeursRgb)
     enhancer = ImageEnhance.Contrast(im)
     imCont=enhancer.enhance(15)
+    
+    progress['value'] = 90
+    root.update_idletasks()
     statlabel.configure(text="State : Saving")
     im.save('res.png')
     imCont.save('resCont.png')
@@ -95,8 +112,10 @@ def mainfunction(image_first, image_second):
     os.system("start res.png")
     os.system("start resCont.png")
 
-    statlabel.configure(text="State : Ended")
     
+    progress['value'] = 100
+    root.update_idletasks()
+    statlabel.configure(text="State : Ended")
 
 # GUI
 
@@ -155,5 +174,9 @@ tempslabel.pack()
 
 statlabel = tk.Label(statlabel, text="State :",bg="#2f93ba", font=("Helvetica", 12))
 statlabel.pack()
+
+progress = Progressbar(statlabel, orient = tk.HORIZONTAL, 
+            length = 250, mode = 'determinate')
+progress.pack()
 
 root.mainloop()
