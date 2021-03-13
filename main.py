@@ -6,7 +6,7 @@ from tkinter import filedialog
 from tkinter.ttk import Progressbar
 import pyfiglet
 import threading
-import os
+from os import system
 
 print(pyfiglet.figlet_format("Calypso", font = "cosmike"))
 print("A Calamar Industries application")
